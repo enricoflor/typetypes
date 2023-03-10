@@ -148,6 +148,14 @@ itself as a set of key-value specifications:
 }
 #+end_src
 
+and then:
+
+#+begin_src latex
+A \ttype {{e} {t}} {s} {t}
+
+B \ttype[hk] {{e} {t}} {s} {t}
+#+end_src
+
 [[./figures/typetypes-5.png]]
 
 I don't know when one would ever need to do this, but you can nest
