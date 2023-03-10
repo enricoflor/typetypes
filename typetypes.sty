@@ -1,0 +1,134 @@
+% Copyright (C) 2023 by Enrico Flor
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in:
+%
+% http://www.latex-project.org/lppl.txt
+%
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{typetypes}[2023/02/28 v0.1.0 Package TypeTypes]
+
+\RequirePackage{xparse}
+
+\makeatletter
+
+\ExplSyntaxOn
+\NewDocumentCommand{\ttype@ifgroups}{mmm}
+{
+  \regex_match:nnTF { \A\s*\cB\{.*\cE\}\s*\Z } { #1 } { #2 } { #3 }
+}
+\ExplSyntaxOff
+
+\newcommand{\ttype@donothing}[1]{#1}
+
+% ---- Set up key-val system
+
+\RequirePackage{pgfkeys}
+
+\pgfkeys{
+  /ttype/.is family,
+  /ttype,
+  %
+  sep/.initial=$\rightarrow$,
+  sep/.get=\ttype@sep@char,
+  sep/.estore in=\ttype@sep@char,
+  %
+  leftdel/.initial=(,
+  leftdel/.get=\ttype@leftdel,
+  leftdel/.estore in=\ttype@leftdel,
+  %
+  rightdel/.initial=),
+  rightdel/.get=\ttype@rightdel,
+  rightdel/.estore in=\ttype@rightdel,
+  %
+  sepdist/.initial=0pt,
+  sepdist/.get=\ttype@sepdist,
+  sepdist/.estore in=\ttype@sepdist,
+  %
+  formattype/.initial=\ttype@donothing,
+  formattype/.get=\ttype@frmttype,
+  formattype/.store in=\ttype@frmttype,
+  %
+  formatleft/.initial=\ttype@donothing,
+  formatleft/.get=\ttype@frmtleft,
+  formatleft/.store in=\ttype@frmtleft,
+  %
+  formatright/.initial=\ttype@donothing,
+  formatright/.get=\ttype@frmtright,
+  formatright/.store in=\ttype@frmtright,
+  %
+  formatsep/.initial=\ttype@donothing,
+  formatsep/.get=\ttype@frmtsep,
+  formatsep/.store in=\ttype@frmtsep,
+  %
+  format/.initial=\ttype@donothing,
+  format/.get=\ttype@frmt,
+  format/.store in=\ttype@frmt,
+}
+
+\newcommand{\ttypestyle}[1]{\pgfqkeys{/ttype}{#1}}
+
+% ---- Auxiliary macros
+
+\newenvironment{ttype@donothingenv}{}{}
+
+\newenvironment{ttype@frmtenv}{\ttype@frmt\bgroup}{\egroup}
+
+\newcommand{\ttype@sep}{%
+  \hspace{\ttype@sepdist}%
+  \ttype@frmtsep\ttype@sep@char%
+  \hspace{\ttype@sepdist}}
+
+% ---- Definition of \ttype macro
+
+% I owe the core idea of for the next three macros to David Yates, who
+% describes in a blog entry how to define a LaTeX macro that accepts a
+% variable number of mandatory arguments:
+% https://davidyat.es/2016/07/27/writing-a-latex-macro-that-takes-a-variable-number-of-arguments/
+
+\NewDocumentCommand{\ttype}{som}
+{%
+  \begin{ttype@donothingenv}%
+    \IfNoValueTF{#2}{}{\pgfkeys{/ttype,#2}}%
+    \begin{ttype@frmtenv}%
+      \IfBooleanTF{#1}%
+      {\@ifundefined{ttype@left}%
+         {\newcommand{\ttype@left}{}}%
+         {\renewcommand{\ttype@left}{}}%
+       \@ifundefined{ttype@right}%
+         {\newcommand{\ttype@right}{}}%
+         {\renewcommand{\ttype@right}{}}}
+      {\@ifundefined{ttype@left}%
+         {\newcommand{\ttype@left}{\ttype@frmtleft\ttype@leftdel}}%
+         {\renewcommand{\ttype@left}{\ttype@frmtleft\ttype@leftdel}}%
+       \@ifundefined{ttype@right}%
+         {\newcommand{\ttype@right}{\ttype@frmtright\ttype@rightdel}}%
+         {\renewcommand{\ttype@right}{\ttype@frmtright\ttype@rightdel}}}%
+      \ttype@left%
+      \ttype@ifgroups{#3}{\ttype#3}{\ttype@frmttype#3}%
+      \ttype@checknext%
+}
+
+\newcommand{\ttype@checknext}
+{%
+  \@ifnextchar\bgroup%
+  {\ttype@getnext}%
+  {\ttype@right\end{ttype@frmtenv}\end{ttype@donothingenv}}%
+}
+
+\newcommand{\ttype@getnext}[1]
+{%
+  \ttype@ifgroups{#1}%
+  {\ttype@sep\ttype#1}{\ttype@sep\ttype@frmttype#1}%
+  \@ifnextchar\bgroup{\ttype@getnext}%
+  {\ttype@right\end{ttype@frmtenv}\end{ttype@donothingenv}}%
+}
+
+\makeatother
+
+\endinput
+% typetypes.sty ends her
