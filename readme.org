@@ -1,11 +1,12 @@
 #+title: Typetypes
 #+author: Enrico Flor
 
-A thing I happen to type relatively often in LaTeX are functional type
-signature.  It is not a pleasant experience, and it becomes a horrible
-one once you want or have to change their style, after having dozens
-of them in your document.  So I wrote two macros for myself, ~\ttype~
-and ~\ttype*~, that make everything about it extremely simple.
+A thing I happen to type relatively often in LaTeX is functional type
+signatures.  It is not a pleasant experience, and it becomes a
+horrible one once you want (or have) to change their style, after
+having written dozens of them in your document.  So I wrote two macros
+for myself, ~\ttype~ and ~\ttype*~, that make everything about it
+extremely simple.
 
 This stuff is not packaged for CTAN (yet), and there isn't a proper
 documentation (yet): the readme file you are reading is the
@@ -35,7 +36,7 @@ E \ttype* {{{e} {t}} {t}} {{e} {t}} {t}
 So the difference between ~\ttype~ and ~\ttype*~ is that the latter never
 outputs any outer delimiter.  Both macros take an arbitrary number of
 arguments, and they are recursive.  *Each individual type has to be an
-argument, enclosed in braces.*
+argument on its own, enclosed in braces.*
 * Customization
 This package specifies 9 options (key value pairs) to customize the
 output of the ~\ttype~ and ~\ttype*~ macro.  For reference, this
@@ -112,8 +113,8 @@ done in the same way as any other package using ~pgfkeys~ does.  You can
 use the ~\ttypestyle~ macro in your preamble to set global values for
 the keys in the table above.  For example, if I want the horrible
 choice of italic left delimiters and boldface separators to hold for
-all invocation of ~\ttype~ and ~\ttype*~ throughout the document (unless
-locally overridden through different specification in the optional
+all invocations of ~\ttype~ and ~\ttype*~ throughout the document (unless
+locally overridden through a different specification in the optional
 argument slot of the macro), I will put this in the preamble:
 
 #+begin_src latex
@@ -123,15 +124,15 @@ argument slot of the macro), I will put this in the preamble:
 }
 #+end_src
 
-The more sensible thing to do however is to bundle different key-value
-specification in a *style* (you can define as many styles as you want of
-course).  For example, say that beside those global value I want do
-define a style that resembles the one used in the popular Heim &
-Kratzer textbook.
+The more sensible thing to do, however, is to bundle different
+key-value specifications in a *style* (you can define as many styles as
+you want, of course).  For example, say that beside those global
+values I also want do define a style that resembles the one used in
+the popular Heim & Kratzer textbook.
 
 I first define a do-nothing macro so that the global value for
-~formatsep~ can be overridden by the ~hk~ style, and then I define the ~hk~
-itself as a set of key-value specifications:
+~formatsep~ can be overridden by the ~hk~ style, and then I define ~hk~
+itself as a set of key-value specifications (i.e., a style):
 
 #+begin_src latex
 \newcommand{\typenothing}[1]{#1}
@@ -159,8 +160,8 @@ B \ttype[hk] {{e} {t}} {s} {t}
 [[./figures/typetypes-5.png]]
 
 I don't know when one would ever need to do this, but you can nest
-~\ttype~ macros inside of other ~\ttype~ macros if you need different
-styles...
+~\ttype~ macros inside of other ~\ttype~ macros if you need to mix
+different styles...
 
 #+begin_src latex
 A \ttype* {s} {\ttype[hk] {e} {t}} {t}
