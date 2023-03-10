@@ -140,7 +140,6 @@ itself as a set of key-value specifications:
   formatleft=\textit,
   formatsep=\textbf,
   hk/.style={
-    format=\ensuremath,
     formatsep=\typenothing,
     sep={,},
     leftdel=$\langle$,
